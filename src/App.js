@@ -20,9 +20,13 @@ const regexPattern = /[^A-Za-z]/g;
 
 function App() {
   const [res, setRes] = useState(null);
+  const [images, setImages] = useState(
+    importAll(require.context("./assets", false, /\.(png|jpe?g|svg)$/))
+  );
 
   useEffect(() => {
     const getSidereal = async () => {
+      console.log();
       const response = await fetch("https://ipapi.co/json/");
       const data = await response.json();
       console.log(data);
@@ -39,17 +43,20 @@ function App() {
           },
         }
       );
-      console.log(
-        `./images/${sidereal.data.planets[0].longitude
-          .replace(regexPattern, "")
-          .toLowerCase()}${sidereal.data.planets[0].padam - 1}.png`,
-        sidereal
-      );
 
       setRes(sidereal);
     };
     getSidereal();
   }, []);
+
+  function importAll(r) {
+    let imgs = {};
+    r.keys().forEach((item, index) => {
+      imgs[item.replace("./", "")] = r(item);
+    });
+    return imgs;
+  }
+
   function getRandomInt(max) {
     return Math.floor(Math.random() * max);
   }
@@ -77,9 +84,13 @@ function App() {
               <div style={{ justifyContent: "space-between" }}>
                 <img
                   style={{ borderRadius: "50%", maxWidth: "50%" }}
-                  src={`/images/${res.data.planets[0].longitude
-                    .replace(regexPattern, "")
-                    .toLowerCase()}${getRandomInt(4)}.png`}
+                  src={
+                    images[
+                      `${res.data.planets[0].longitude
+                        .replace(regexPattern, "")
+                        .toLowerCase()}${getRandomInt(4)}.png`
+                    ]
+                  }
                   alt="image not found"
                 ></img>
               </div>
