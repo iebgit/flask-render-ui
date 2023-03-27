@@ -1,12 +1,25 @@
-import logo from "./logo.svg";
 import "./App.css";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import parse from "html-react-parser";
+import {
+  Box,
+  Grid,
+  GridItem,
+  SimpleGrid,
+  Table,
+  Thead,
+  Tbody,
+  Tfoot,
+  Tr,
+  Th,
+  Td,
+  TableCaption,
+  TableContainer,
+} from "@chakra-ui/react";
 const regexPattern = /[^A-Za-z]/g;
+
 function App() {
   const [res, setRes] = useState(null);
-  const [position, setPosition] = useState({});
 
   useEffect(() => {
     const getSidereal = async () => {
@@ -41,53 +54,69 @@ function App() {
     return Math.floor(Math.random() * max);
   }
   return (
-    <center className="App-header">
-      {res && (
-        <>
-          <strong style={{ color: "#FCB13B" }}>
-            {res?.data.location.city}, {res?.data.location.region}
-          </strong>
-          <small>{res?.data.location.time}</small>
-          <br />
+    <div className="App-header">
+      <SimpleGrid minChildWidth="600px" columns={2} spacing={4}>
+        <Box rowSpan={6} colSpan={6}>
+          {res && (
+            <center>
+              <strong style={{ color: "#FCB13B" }}>
+                {res?.data.location.city}, {res?.data.location.region}
+              </strong>
+              <br />
+              <small>{res?.data.location.time}</small>
 
-          <h4
-            style={{
-              color: "#FF6630",
-            }}
-          >
-            {res?.data.planets[0].planet.toUpperCase()}:{" "}
-            {res?.data.planets[0].longitude}
-          </h4>
+              <h4
+                style={{
+                  color: "#FF6630",
+                }}
+              >
+                {res?.data.planets[0].planet.toUpperCase()}:{" "}
+                {res?.data.planets[0].longitude}
+              </h4>
+              <br />
+              <div style={{ justifyContent: "space-between" }}>
+                <img
+                  style={{ borderRadius: "50%", maxWidth: "50%" }}
+                  src={`/images/${res.data.planets[0].longitude
+                    .replace(regexPattern, "")
+                    .toLowerCase()}${getRandomInt(4)}.png`}
+                  alt="image not found"
+                ></img>
+              </div>
 
-          <br />
-          <img
-            style={{ borderRadius: "50%", maxWidth: "50%" }}
-            src={`/images/${res.data.planets[0].longitude
-              .replace(regexPattern, "")
-              .toLowerCase()}${getRandomInt(4)}.png`}
-            alt="image not found"
-          ></img>
-          <br />
-          <table>
-            <tbody>
-              <tr>
-                <th>Planet</th>
-                <th>Position</th>
-              </tr>
-              {res?.data.planets.slice(1).map((planet, i) => {
-                return (
-                  <tr key={i}>
-                    <td>{planet.planet}</td>
-                    <td>{planet.longitude}</td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-          <br />
-        </>
-      )}
-    </center>
+              <br />
+            </center>
+          )}
+        </Box>
+        <Box colSpan={6}>
+          <center>
+            <TableContainer>
+              <Table>
+                <TableCaption style={{ color: "white" }}>
+                  Planetary Positions
+                </TableCaption>
+                <Thead>
+                  <Tr>
+                    <Th style={{ color: "white" }}>Planets</Th>
+                    <Th style={{ color: "white" }}> Positions</Th>
+                  </Tr>
+                </Thead>
+                <Tbody>
+                  {res?.data.planets.slice(1).map((planet, i) => {
+                    return (
+                      <Tr key={i}>
+                        <Td>{planet.planet}</Td>
+                        <Td>{planet.longitude}</Td>
+                      </Tr>
+                    );
+                  })}
+                </Tbody>
+              </Table>
+            </TableContainer>
+          </center>
+        </Box>
+      </SimpleGrid>
+    </div>
   );
 }
 
