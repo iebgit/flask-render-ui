@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import {
   Box,
+  Spinner,
   Grid,
   GridItem,
   SimpleGrid,
@@ -62,71 +63,83 @@ function App() {
   }
   return (
     <div className="App-header">
-      <SimpleGrid minChildWidth="600px" columns={2} spacing={4}>
-        <Box rowSpan={6} colSpan={6}>
-          {res && (
+      {res ? (
+        <SimpleGrid minChildWidth="600px" columns={2} spacing={4}>
+          <Box rowSpan={6} colSpan={6}>
+            {res && (
+              <center>
+                <strong style={{ color: "#FCB13B" }}>
+                  {res?.data.location.city}, {res?.data.location.region}
+                </strong>
+                <br />
+                <small>{res?.data.location.time}</small>
+
+                <h4
+                  style={{
+                    color: "#FF6630",
+                  }}
+                >
+                  {res?.data.planets[0].planet.toUpperCase()}:{" "}
+                  {res?.data.planets[0].longitude}
+                </h4>
+                <br />
+                <div style={{ justifyContent: "space-between" }}>
+                  <img
+                    style={{ borderRadius: "50%", maxWidth: "50%" }}
+                    src={
+                      images[
+                        `${res.data.planets[0].longitude
+                          .replace(regexPattern, "")
+                          .toLowerCase()}${getRandomInt(4)}.png`
+                      ]
+                    }
+                    alt="image not found"
+                  ></img>
+                </div>
+
+                <br />
+              </center>
+            )}
+          </Box>
+          <Box colSpan={6}>
             <center>
-              <strong style={{ color: "#FCB13B" }}>
-                {res?.data.location.city}, {res?.data.location.region}
-              </strong>
-              <br />
-              <small>{res?.data.location.time}</small>
-
-              <h4
-                style={{
-                  color: "#FF6630",
-                }}
-              >
-                {res?.data.planets[0].planet.toUpperCase()}:{" "}
-                {res?.data.planets[0].longitude}
-              </h4>
-              <br />
-              <div style={{ justifyContent: "space-between" }}>
-                <img
-                  style={{ borderRadius: "50%", maxWidth: "50%" }}
-                  src={
-                    images[
-                      `${res.data.planets[0].longitude
-                        .replace(regexPattern, "")
-                        .toLowerCase()}${getRandomInt(4)}.png`
-                    ]
-                  }
-                  alt="image not found"
-                ></img>
-              </div>
-
-              <br />
+              <TableContainer>
+                <Table>
+                  <TableCaption style={{ color: "white" }}>
+                    Planetary Positions
+                  </TableCaption>
+                  <Thead>
+                    <Tr>
+                      <Th style={{ color: "white" }}>Planets</Th>
+                      <Th style={{ color: "white" }}> Positions</Th>
+                    </Tr>
+                  </Thead>
+                  <Tbody>
+                    {res?.data.planets.slice(1).map((planet, i) => {
+                      return (
+                        <Tr key={i}>
+                          <Td>{planet.planet}</Td>
+                          <Td>{planet.longitude}</Td>
+                        </Tr>
+                      );
+                    })}
+                  </Tbody>
+                </Table>
+              </TableContainer>
             </center>
-          )}
-        </Box>
-        <Box colSpan={6}>
-          <center>
-            <TableContainer>
-              <Table>
-                <TableCaption style={{ color: "white" }}>
-                  Planetary Positions
-                </TableCaption>
-                <Thead>
-                  <Tr>
-                    <Th style={{ color: "white" }}>Planets</Th>
-                    <Th style={{ color: "white" }}> Positions</Th>
-                  </Tr>
-                </Thead>
-                <Tbody>
-                  {res?.data.planets.slice(1).map((planet, i) => {
-                    return (
-                      <Tr key={i}>
-                        <Td>{planet.planet}</Td>
-                        <Td>{planet.longitude}</Td>
-                      </Tr>
-                    );
-                  })}
-                </Tbody>
-              </Table>
-            </TableContainer>
-          </center>
-        </Box>
-      </SimpleGrid>
+          </Box>
+        </SimpleGrid>
+      ) : (
+        <div className="App-center">
+          <Spinner
+            thickness="4px"
+            speed="0.65s"
+            emptyColor="yellow.200"
+            color="yellow.800"
+            size="xl"
+          />
+        </div>
+      )}
     </div>
   );
 }
