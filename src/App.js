@@ -24,23 +24,21 @@ function App() {
 
   useEffect(() => {
     const getSidereal = async () => {
-      if (!res) {
-        const response = await fetch("https://ipapi.co/json/");
-        const data = await response.json();
-        const sidereal = await axios.get(
-          `https://astrapredict.onrender.com/astro/sidereal`,
-          {
-            params: {
-              city: data.city,
-              region: data.region,
-              ip: data.ip,
-              country: data.country,
-              time: new Date().toLocaleString(),
-            },
-          }
-        );
-        setRes(sidereal);
-      }
+      const response = await fetch("https://ipapi.co/json/");
+      const data = await response.json();
+      const sidereal = await axios.get(
+        `https://astrapredict.onrender.com/astro/sidereal`,
+        {
+          params: {
+            city: data.city,
+            region: data.region,
+            ip: data.ip,
+            country: data.country,
+            time: new Date().toLocaleString(),
+          },
+        }
+      );
+      setRes(sidereal);
     };
     getSidereal();
   }, []);
@@ -53,6 +51,14 @@ function App() {
     return imgs;
   }
 
+  function getImage() {
+    return images[
+      `${res.data.planets[0].longitude
+        .replace(regexPattern, "")
+        .toLowerCase()}${getRandomInt(4)}.png`
+    ];
+  }
+
   function getRandomInt(max) {
     return Math.floor(Math.random() * max);
   }
@@ -63,36 +69,42 @@ function App() {
           <Box rowSpan={6} colSpan={6}>
             {res && (
               <center>
-                <strong style={{ color: "#FCB13B" }}>
-                  {res?.data.location.city}, {res?.data.location.region}
-                </strong>
                 <br />
-                <small>{res?.data.location.time}</small>
-
+                <h3>
+                  <strong style={{ color: "#FCB13B" }}>
+                    {res?.data.location.city}, {res?.data.location.region}
+                  </strong>
+                  <br />
+                  <small>{res?.data.location.time}</small>
+                </h3>
+                <br />
+                <div style={{ justifyContent: "space-between" }}>
+                  {images ? (
+                    <img
+                      style={{ borderRadius: "50%", maxWidth: "50%" }}
+                      src={getImage()}
+                      alt="image not found"
+                    ></img>
+                  ) : (
+                    <Spinner
+                      thickness="4px"
+                      speed="0.65s"
+                      emptyColor="yellow.400"
+                      color="yellow.600"
+                      size="xl"
+                    />
+                  )}
+                </div>
+                <br />
                 <h4
                   style={{
                     color: "#FF6630",
+                    fontWeight: "bold",
                   }}
                 >
                   {res?.data.planets[0].planet.toUpperCase()}:{" "}
                   {res?.data.planets[0].longitude}
                 </h4>
-                <br />
-                <div style={{ justifyContent: "space-between" }}>
-                  <img
-                    style={{ borderRadius: "50%", maxWidth: "50%" }}
-                    src={
-                      images[
-                        `${res.data.planets[0].longitude
-                          .replace(regexPattern, "")
-                          .toLowerCase()}${getRandomInt(4)}.png`
-                      ]
-                    }
-                    alt="image not found"
-                  ></img>
-                </div>
-
-                <br />
               </center>
             )}
           </Box>
@@ -129,8 +141,8 @@ function App() {
           <Spinner
             thickness="4px"
             speed="0.65s"
-            emptyColor="yellow.200"
-            color="yellow.800"
+            emptyColor="yellow.400"
+            color="yellow.600"
             size="xl"
           />
         </div>
