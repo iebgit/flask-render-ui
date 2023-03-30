@@ -4,13 +4,10 @@ import axios from "axios";
 import {
   Box,
   Spinner,
-  Grid,
-  GridItem,
   SimpleGrid,
   Table,
   Thead,
   Tbody,
-  Tfoot,
   Tr,
   Th,
   Td,
@@ -20,32 +17,32 @@ import {
 const regexPattern = /[^A-Za-z]/g;
 
 function App() {
-  const [res, setRes] = useState(null);
+  const [res, setRes] = useState();
   const [images, setImages] = useState(
     importAll(require.context("./assets", false, /\.(png|jpe?g|svg)$/))
   );
 
   useEffect(() => {
     const getSidereal = async () => {
-      console.log();
-      const response = await fetch("https://ipapi.co/json/");
-      const data = await response.json();
-      console.log(data);
-
-      const sidereal = await axios.get(
-        `https://astrapredict.onrender.com//astro/sidereal`,
-        {
-          params: {
-            city: data.city,
-            region: data.region,
-            ip: data.ip,
-            country: data.country,
-            time: new Date().toLocaleString(),
-          },
-        }
-      );
-
-      setRes(sidereal);
+      if (!res) {
+        let a = Date.now();
+        const response = await fetch("https://ipapi.co/json/");
+        const data = await response.json();
+        let b = Date.now();
+        const sidereal = await axios.get(
+          `https://astrapredict.onrender.com/astro/sidereal`,
+          {
+            params: {
+              city: data.city,
+              region: data.region,
+              ip: data.ip,
+              country: data.country,
+              time: new Date().toLocaleString(),
+            },
+          }
+        );
+        setRes(sidereal);
+      }
     };
     getSidereal();
   }, []);
@@ -64,7 +61,7 @@ function App() {
   return (
     <div className="App-header">
       {res ? (
-        <SimpleGrid minChildWidth="600px" columns={2} spacing={4}>
+        <SimpleGrid minChildWidth="400px" columns={2} spacing={4}>
           <Box rowSpan={6} colSpan={6}>
             {res && (
               <center>
