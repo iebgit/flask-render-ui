@@ -25,10 +25,8 @@ function App() {
   useEffect(() => {
     const getSidereal = async () => {
       if (!res) {
-        let a = Date.now();
         const response = await fetch("https://ipapi.co/json/");
         const data = await response.json();
-        let b = Date.now();
         const sidereal = await axios.get(
           `https://astrapredict.onrender.com/astro/sidereal`,
           {
