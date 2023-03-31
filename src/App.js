@@ -25,11 +25,14 @@ function App() {
 
   useEffect(() => {
     const getSidereal = async () => {
-      const sidereal = await axios.get(`http://localhost:5000/astro/sidereal`, {
-        params: {
-          time: new Date().toLocaleString(),
-        },
-      });
+      const sidereal = await axios.get(
+        `https://astrapredict.onrender.com/astro/sidereal`,
+        {
+          params: {
+            time: new Date().toLocaleString(),
+          },
+        }
+      );
       setRes(sidereal);
     };
     getSidereal();
