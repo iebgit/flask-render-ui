@@ -25,20 +25,11 @@ function App() {
 
   useEffect(() => {
     const getSidereal = async () => {
-      const response = await fetch("https://ipapi.co/json/");
-      const data = await response.json();
-      const sidereal = await axios.get(
-        `https://astrapredict.onrender.com/astro/sidereal`,
-        {
-          params: {
-            city: data.city,
-            region: data.region,
-            ip: data.ip,
-            country: data.country,
-            time: new Date().toLocaleString(),
-          },
-        }
-      );
+      const sidereal = await axios.get(`http://localhost:5000/astro/sidereal`, {
+        params: {
+          time: new Date().toLocaleString(),
+        },
+      });
       setRes(sidereal);
     };
     getSidereal();
@@ -139,7 +130,15 @@ function App() {
         </SimpleGrid>
       ) : (
         <div className="App-center">
-          <img src={loader} alt="Loading..." />
+          <img
+            style={{
+              borderRadius: "50%",
+              minWidth: "100px",
+              minHeight: "100px",
+            }}
+            src={loader}
+            alt="Loading..."
+          />
         </div>
       )}
     </div>
