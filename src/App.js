@@ -25,14 +25,11 @@ function App() {
 
   useEffect(() => {
     const getSidereal = async () => {
-      const sidereal = await axios.get(
-        `https://astrapredict.onrender.com/astro/sidereal`,
-        {
-          params: {
-            time: new Date().toLocaleString(),
-          },
-        }
-      );
+      const sidereal = await axios.get(`http://localhost:5000/astro/sidereal`, {
+        params: {
+          time: new Date().toLocaleString(),
+        },
+      });
       setRes(sidereal);
     };
     getSidereal();
@@ -40,7 +37,7 @@ function App() {
 
   function importAll(r) {
     let imgs = {};
-    r.keys().forEach((item, index) => {
+    r.keys().forEach((item) => {
       imgs[item.replace("./", "")] = r(item);
     });
     return imgs;
@@ -57,6 +54,7 @@ function App() {
   function getRandomInt(max) {
     return Math.floor(Math.random() * max);
   }
+
   return (
     <div className="App-header">
       {res ? (
@@ -100,6 +98,12 @@ function App() {
                   {res?.data.planets[0].planet.toUpperCase()}:{" "}
                   {res?.data.planets[0].longitude}
                 </h4>
+                <p>
+                  24hr BTC Price Prediction:{" "}
+                  <span style={{ color: "#FCB13B", fontWeight: "bold" }}>
+                    $ {res?.data.predicted24hr}
+                  </span>
+                </p>
               </center>
             )}
           </Box>
