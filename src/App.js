@@ -1,7 +1,6 @@
 import "./App.css";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import loader from "./assets/loader.gif";
 import {
   Box,
   Spinner,
@@ -140,14 +139,12 @@ function App() {
         </SimpleGrid>
       ) : (
         <div className="App-center">
-          <img
-            style={{
-              borderRadius: "50%",
-              minWidth: "100px",
-              minHeight: "100px",
-            }}
-            src={loader}
-            alt="Loading..."
+          <Spinner
+            thickness="4px"
+            speed="0.65s"
+            emptyColor="yellow.400"
+            color="yellow.600"
+            size="xl"
           />
         </div>
       )}
